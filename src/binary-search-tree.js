@@ -5,6 +5,14 @@ const { NotImplementedError } = require('../lib/errors');
 * Implement simple binary search tree according to task description
 * using Node from extensions
 */
+class Node {
+  constructor(data) {
+    this.data = data;
+    this.left = null;
+    this.right = null;
+  }
+}
+
 class BinarySearchTree {
   constructor() {
     this._root = null;
@@ -22,19 +30,13 @@ class BinarySearchTree {
     if (node === null) {
       return new Node(data);
     }
-
     if (data < node.data) {
       node.left = this._addNode(node.left, data);
     } else if (data > node.data) {
       node.right = this._addNode(node.right, data);
     }
-    // If data equals node.data, we don't add duplicates
-
+    // If data is equal, do not add duplicates, or handle duplicates as needed
     return node;
-  }
-
-  has(data) {
-    return this.find(data) !== null;
   }
 
   find(data) {
@@ -42,17 +44,14 @@ class BinarySearchTree {
   }
 
   _findNode(node, data) {
-    if (node === null) {
-      return null;
-    }
+    if (node === null) return null;
+    if (data === node.data) return node;
+    if (data < node.data) return this._findNode(node.left, data);
+    return this._findNode(node.right, data);
+  }
 
-    if (data === node.data) {
-      return node;
-    } else if (data < node.data) {
-      return this._findNode(node.left, data);
-    } else {
-      return this._findNode(node.right, data);
-    }
+  has(data) {
+    return this.find(data) !== null;
   }
 
   remove(data) {
@@ -60,71 +59,48 @@ class BinarySearchTree {
   }
 
   _removeNode(node, data) {
-    if (node === null) {
-      return null;
-    }
+    if (node === null) return null;
+    if (data === node.data) {
+      // Node with only one child or no child
+      if (node.left === null) return node.right;
+      if (node.right === null) return node.left;
 
-    if (data < node.data) {
+      // Node with two children: Get the inorder successor (smallest in the right subtree)
+      let minNode = this._minNode(node.right);
+      node.data = minNode.data;
+      node.right = this._removeNode(node.right, minNode.data);
+      return node;
+    } else if (data < node.data) {
       node.left = this._removeNode(node.left, data);
       return node;
-    } else if (data > node.data) {
+    } else {
       node.right = this._removeNode(node.right, data);
       return node;
-    } else {
-      // Node to be deleted found
-
-      // Case 1: Node with no children
-      if (node.left === null && node.right === null) {
-        return null;
-      }
-
-      // Case 2: Node with one child
-      if (node.left === null) {
-        return node.right;
-      }
-      if (node.right === null) {
-        return node.left;
-      }
-
-      // Case 3: Node with two children
-      // Find the smallest node in the right subtree (inorder successor)
-      const minRight = this._findMinNode(node.right);
-      node.data = minRight.data;
-      node.right = this._removeNode(node.right, minRight.data);
-      return node;
     }
-  }
-
-  _findMinNode(node) {
-    let current = node;
-    while (current.left !== null) {
-      current = current.left;
-    }
-    return current;
   }
 
   min() {
-    if (this._root === null) {
-      return null;
-    }
+    if (this._root === null) return null;
+    return this._minNode(this._root).data;
+  }
 
-    let current = this._root;
-    while (current.left !== null) {
-      current = current.left;
+  _minNode(node) {
+    while (node.left !== null) {
+      node = node.left;
     }
-    return current.data;
+    return node;
   }
 
   max() {
-    if (this._root === null) {
-      return null;
-    }
+    if (this._root === null) return null;
+    return this._maxNode(this._root).data;
+  }
 
-    let current = this._root;
-    while (current.right !== null) {
-      current = current.right;
+  _maxNode(node) {
+    while (node.right !== null) {
+      node = node.right;
     }
-    return current.data;
+    return node;
   }
 }
 

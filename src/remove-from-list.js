@@ -22,36 +22,18 @@ const { NotImplementedError } = require('../lib/errors');
  * }
  */
 function removeKFromList(l, k) {
-  // Handle empty list
-  if (!l) {
-    return null;
-  }
-
-  // Create a dummy node to simplify edge cases (like removing the head)
-  let dummy = new ListNode(0);
+  // Create a dummy node to handle edge cases easily
+  const dummy = new ListNode(0);
   dummy.next = l;
-  
   let current = dummy;
 
-  // Iterate through the list
   while (current.next !== null) {
     if (current.next.value === k) {
-      // Skip the node with value k
+      // Remove the node with value k
       current.next = current.next.next;
     } else {
-      // Move to next node
       current = current.next;
     }
-  }
-
-  return dummy.next;
-}
-
-// ListNode class definition in case the import doesn't work
-class ListNode {
-  constructor(x) {
-    this.value = x;
-    this.next = null;
   }
 }
 

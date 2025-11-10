@@ -14,28 +14,21 @@ const { NotImplementedError } = require('../lib/errors');
  */
 class Stack {
   constructor() {
-    this.items = [];
+    this.stack = [];
   }
 
   push(value) {
-    this.items.push(value);
+    this.stack.push(value);
   }
 
   pop() {
-    if (this.items.length === 0) {
-      return undefined;
-    }
-    return this.items.pop();
+    return this.stack.pop();
   }
 
   peek() {
-    if (this.items.length === 0) {
-      return undefined;
-    }
-    return this.items[this.items.length - 1];
+    return this.stack[this.stack.length - 1];
   }
 }
-
 
 module.exports = {
   Stack,

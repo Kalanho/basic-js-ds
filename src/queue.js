@@ -14,49 +14,42 @@ const { NotImplementedError } = require('../lib/errors');
  */
 class Queue {
   constructor() {
-    this.head = null; // front of the queue
-    this.tail = null; // back of the queue
-    this.length = 0;
+    this.head = null; // points to the front of the queue
+    this.tail = null; // points to the end of the queue
   }
 
   getUnderlyingList() {
+    // Return the linked list starting from the head
     return this.head;
   }
 
   enqueue(value) {
     const newNode = new ListNode(value);
-    
-    if (this.tail === null) {
-      // Queue is empty, both head and tail point to new node
+    if (!this.head) {
+      // If queue is empty, new node becomes head and tail
       this.head = newNode;
       this.tail = newNode;
     } else {
-      // Add to the end and update tail
+      // Append to the end and update tail
       this.tail.next = newNode;
       this.tail = newNode;
     }
-    
-    this.length++;
   }
 
   dequeue() {
-    if (this.head === null) {
-      return undefined; // or throw an error, depending on requirements
+    if (!this.head) {
+      // Queue is empty
+      return null;
     }
-    
-    const dequeuedValue = this.head.value;
+    const value = this.head.value;
     this.head = this.head.next;
-    
-    // If head becomes null, queue is empty, so tail should also be null
-    if (this.head === null) {
+    if (!this.head) {
+      // If the queue becomes empty, reset tail
       this.tail = null;
     }
-    
-    this.length--;
-    return dequeuedValue;
+    return value;
   }
 }
-
 
 module.exports = {
   Queue
