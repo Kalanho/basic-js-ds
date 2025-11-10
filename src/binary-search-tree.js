@@ -6,39 +6,125 @@ const { NotImplementedError } = require('../lib/errors');
 * using Node from extensions
 */
 class BinarySearchTree {
+  constructor() {
+    this._root = null;
+  }
+
   root() {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
+    return this._root;
   }
 
-  add(/* data */) {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
+  add(data) {
+    this._root = this._addNode(this._root, data);
   }
 
-  find(/* data */) {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
+  _addNode(node, data) {
+    if (node === null) {
+      return new Node(data);
+    }
+
+    if (data < node.data) {
+      node.left = this._addNode(node.left, data);
+    } else if (data > node.data) {
+      node.right = this._addNode(node.right, data);
+    }
+    // If data equals node.data, we don't add duplicates
+
+    return node;
   }
 
-  has(/* data */) {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
+  has(data) {
+    return this.find(data) !== null;
   }
 
-  remove(/* data */) {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
+  find(data) {
+    return this._findNode(this._root, data);
+  }
+
+  _findNode(node, data) {
+    if (node === null) {
+      return null;
+    }
+
+    if (data === node.data) {
+      return node;
+    } else if (data < node.data) {
+      return this._findNode(node.left, data);
+    } else {
+      return this._findNode(node.right, data);
+    }
+  }
+
+  remove(data) {
+    this._root = this._removeNode(this._root, data);
+  }
+
+  _removeNode(node, data) {
+    if (node === null) {
+      return null;
+    }
+
+    if (data < node.data) {
+      node.left = this._removeNode(node.left, data);
+      return node;
+    } else if (data > node.data) {
+      node.right = this._removeNode(node.right, data);
+      return node;
+    } else {
+      // Node to be deleted found
+
+      // Case 1: Node with no children
+      if (node.left === null && node.right === null) {
+        return null;
+      }
+
+      // Case 2: Node with one child
+      if (node.left === null) {
+        return node.right;
+      }
+      if (node.right === null) {
+        return node.left;
+      }
+
+      // Case 3: Node with two children
+      // Find the smallest node in the right subtree (inorder successor)
+      const minRight = this._findMinNode(node.right);
+      node.data = minRight.data;
+      node.right = this._removeNode(node.right, minRight.data);
+      return node;
+    }
+  }
+
+  _findMinNode(node) {
+    let current = node;
+    while (current.left !== null) {
+      current = current.left;
+    }
+    return current;
   }
 
   min() {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
+    if (this._root === null) {
+      return null;
+    }
+
+    let current = this._root;
+    while (current.left !== null) {
+      current = current.left;
+    }
+    return current.data;
   }
 
   max() {
-    // Remove line below and write your code here
-    throw new NotImplementedError('Not implemented');
+    if (this._root === null) {
+      return null;
+    }
+
+    let current = this._root;
+    while (current.right !== null) {
+      current = current.right;
+    }
+    return current.data;
   }
 }
 
